@@ -7,7 +7,8 @@ ASCII_CHARS = "@%#*+=-:. "
 def resize_image(image, new_width=100):
     width, height = image.size
     ratio = height / width
-    new_height = int(new_width * ratio)
+    # Adjust for terminal character aspect ratio (approximately 2:1)
+    new_height = int(new_width * ratio * 0.5)  # multiply by 0.5 to compensate for terminal chars
     resized_image = image.resize((new_width, new_height))
     return resized_image
 
@@ -22,12 +23,13 @@ def pixels_to_ascii(image):
         ascii_str += ASCII_CHARS[pixel // 32]
     return ascii_str
 
-def image_to_ascii(image_path, new_width=100):
-    try:
-        image = Image.open(image_path)
-    except Exception as e:
-        print(e)
-        return
+def image_to_ascii(image, new_width=100):
+    if isinstance(image, str):
+        try:
+            image = Image.open(image)
+        except Exception as e:
+            print(e)
+            return
 
     image = resize_image(image, new_width)
     image = grayify(image)

@@ -1,3 +1,5 @@
 input/
 output/
 *ascii_image.txt
+__pycache__/
+frames/
