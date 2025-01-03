@@ -4,9 +4,12 @@ from PIL import Image
 
 def extract_frames(gif_path, output_dir=None):
     try:
-        frames = []
         with Image.open(gif_path) as im:
-            # Check if image is animated
+            # Check if image is animated GIF
+            if not getattr(im, "is_animated", False):
+                return None
+            
+            frames = []
             try:
                 while True:
                     # Copy the current frame
@@ -23,8 +26,8 @@ def extract_frames(gif_path, output_dir=None):
             return frames
 
     except Exception as e:
-        print(f"Error processing GIF: {e}")
-        return []
+        print(f"Error processing file: {e}")
+        return None
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Extract frames from a GIF file.")
