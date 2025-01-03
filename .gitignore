@@ -1,5 +1,5 @@
 input/
 output/
-*ascii_image.txt
+*.txt
 __pycache__/
 frames/
