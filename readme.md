@@ -17,9 +17,9 @@ Convert images and animated GIFs to ASCII art in your terminal. Supports both st
 
 
 ```
-python asciImage.py <image_path>
+python asciImage.py <image_path> --<options>
 ```
-
+![cat rendered as ASCII art](./cheezeASCII.png)
 ### Options
 * --width \<pixels>: Set output width in characters (default: 100)
 * --delay \<seconds>: Set frame delay for GIF animations (default: 0.1)
@@ -44,3 +44,4 @@ Use custom characters:
 ```
 python asciImage.py image.jpg --chars ".:-=+*#%@"
 ```
+

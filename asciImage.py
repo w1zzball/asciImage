@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 class ASCIIArtConverter:
-    DEFAULT_ASCII_CHARS = ".:-=+*#%@"
+    DEFAULT_ASCII_CHARS = ".:-=+*#%@" #"NBUa1|^ " also produces good results
 
     def __init__(self, width=100, frame_delay=0.1, dither=False, ascii_chars=None):
         self.width = width
