@@ -2,18 +2,22 @@ import os
 import time
 import argparse
 from extract_frames import extract_frames
-from ascii import image_to_ascii
+from ascii import image_to_ascii, DEFAULT_ASCII_CHARS
+from ascii_order import sort_by_brightness
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def animate_gif(file_path, width=100, frame_delay=0.1, output=None, dither=False):
+def animate_gif(file_path, width=100, frame_delay=0.1, output=None, dither=False, ascii_chars=DEFAULT_ASCII_CHARS):
+    # Sort custom ASCII characters if provided and reverse (lightest to darkest)
+    sorted_chars = sort_by_brightness(ascii_chars)[::-1]
+    
     # Extract frames if it's a GIF
     frames = extract_frames(file_path)
     
     # If not a GIF or frames extraction failed, treat as static image
     if frames is None:
-        ascii_art = image_to_ascii(file_path, width, dither)
+        ascii_art = image_to_ascii(file_path, width, dither, sorted_chars)
         if ascii_art:
             if output:
                 try:
@@ -31,7 +35,7 @@ def animate_gif(file_path, width=100, frame_delay=0.1, output=None, dither=False
         while True:  # Loop forever
             for frame in frames:
                 clear_screen()
-                ascii_frame = image_to_ascii(frame, width, dither)
+                ascii_frame = image_to_ascii(frame, width, dither, sorted_chars)
                 print(ascii_frame)
                 time.sleep(frame_delay)
     except KeyboardInterrupt:
@@ -45,6 +49,8 @@ if __name__ == "__main__":
     parser.add_argument("--delay", type=float, default=0.1, help="Delay between frames in seconds")
     parser.add_argument("--output", help="Output file for saving ASCII art (optional)")
     parser.add_argument("--dither", action="store_true", help="Apply dithering to the image")
+    parser.add_argument("--chars", default=DEFAULT_ASCII_CHARS,
+                      help="Custom ASCII characters (will be sorted by brightness)")
     args = parser.parse_args()
 
-    animate_gif(args.file_path, args.width, args.delay, args.output, args.dither)
+    animate_gif(args.file_path, args.width, args.delay, args.output, args.dither, args.chars)

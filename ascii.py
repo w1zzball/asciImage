@@ -1,8 +1,8 @@
 import argparse
 from PIL import Image
 
-# ASCII characters from darkest to lightest
-ASCII_CHARS = ".:-=+*#%@"
+# Default ASCII characters from darkest to lightest
+DEFAULT_ASCII_CHARS = ".:-=+*#%@"
 
 def resize_image(image, new_width=100):
     width, height = image.size
@@ -19,16 +19,16 @@ def grayify(image):
 def apply_dithering(image):
     return image.convert('1', dither=Image.FLOYDSTEINBERG)
 
-def pixels_to_ascii(image):
+def pixels_to_ascii(image, ascii_chars=DEFAULT_ASCII_CHARS):
     pixels = image.getdata()
     ascii_str = ""
     # Adjust division factor for the new range of characters
-    interval = 256 / len(ASCII_CHARS)
+    interval = 256 / len(ascii_chars)
     for pixel in pixels:
-        ascii_str += ASCII_CHARS[int(pixel / interval)]
+        ascii_str += ascii_chars[int(pixel / interval)]
     return ascii_str
 
-def image_to_ascii(image, new_width=100, dither=False):
+def image_to_ascii(image, new_width=100, dither=False, ascii_chars=DEFAULT_ASCII_CHARS):
     if isinstance(image, str):
         try:
             image = Image.open(image)
@@ -43,7 +43,7 @@ def image_to_ascii(image, new_width=100, dither=False):
         image = apply_dithering(image)
     image = grayify(image)
     
-    ascii_str = pixels_to_ascii(image)
+    ascii_str = pixels_to_ascii(image, ascii_chars)
 
     img_width = image.width
     ascii_str_len = len(ascii_str)
@@ -59,9 +59,11 @@ if __name__ == "__main__":
     parser.add_argument("--width", type=int, default=100, help="Desired output width of the ASCII art")
     parser.add_argument("--output", help="Path to save the ASCII art output file")
     parser.add_argument("--dither", action="store_true", help="Apply dithering to the image")
+    parser.add_argument("--chars", default=DEFAULT_ASCII_CHARS, 
+                      help="Custom ASCII characters (darkest to lightest)")
     args = parser.parse_args()
 
-    ascii_art = image_to_ascii(args.image_path, args.width, args.dither)
+    ascii_art = image_to_ascii(args.image_path, args.width, args.dither, args.chars)
     if ascii_art:
         if args.output:
             try:
